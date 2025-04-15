@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Incrementador</string>
+    <string name="ManualButton">Manual Increment</string>
+    <string name="AutoButton">Auto Increment</string>
+    <string name="StopButton">Stop Increment</string>
+    <string name="ZeroButton">Zero Increment</string>
+</resources>
