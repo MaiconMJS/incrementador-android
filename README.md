@@ -25,15 +25,6 @@ Um aplicativo Android desenvolvido com **Jetpack Compose**, que apresenta dois v
 
 > Inspirado na arquitetura do React (com `useState`, `useEffect`, e `custom hooks`).
 
----
-
-## 📁 Estrutura do Projeto
-
-com.newoverride.incrementador/ ├── HomeActivity.kt # Tela principal ├── hooks/ │ └── incrementHook.kt # Lógica de estado (sem ViewModel) ├── model/ │ └── IncrementModel.kt # Modelo com estados e ações ├── ui/ │ ├── components/ # Botões e display │ ├── theme/ # Cores e estilos │ └── view/ │ └── HomeView.kt # Composable principal ├── dimens/ │ └── Dimens.kt # Dimensões reutilizáveis
-
-
----
-
 ## 📸 Demonstração
 
 <img src="tela.jpg" alt="Interface do App Mobile" width="300">
