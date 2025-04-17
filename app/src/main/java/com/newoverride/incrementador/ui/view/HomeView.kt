@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.newoverride.incrementador.R
 import com.newoverride.incrementador.dimens.Dimens
+import com.newoverride.incrementador.enum.ButtonType
 import com.newoverride.incrementador.hooks.incrementHook
 import com.newoverride.incrementador.ui.components.ButtonStyle
 import com.newoverride.incrementador.ui.components.Display
@@ -39,13 +40,13 @@ fun HomeView() {
                     ButtonStyle(
                         textButton = stringResource(R.string.ManualButton),
                         onClick = incrementHook.manualIncrement,
-                        isPressed = incrementHook.manualButtonPressed,
+                        isPressed = incrementHook.buttonPressedState[ButtonType.MANUAL] == true,
                         colors = ButtonDefaults.buttonColors(containerColor = Blue)
                     )
                     ButtonStyle(
                         textButton = stringResource(R.string.AutoButton),
                         onClick = incrementHook.autoIncrement,
-                        isPressed = incrementHook.autoButtonPressed,
+                        isPressed = incrementHook.buttonPressedState[ButtonType.AUTO] == true,
                         colors = ButtonDefaults.buttonColors(containerColor = Green)
                     )
                 }
@@ -58,13 +59,13 @@ fun HomeView() {
                     ButtonStyle(
                         textButton = stringResource(R.string.StopButton),
                         onClick = incrementHook.stopIncrement,
-                        isPressed = incrementHook.stopButtonPressed,
+                        isPressed = incrementHook.buttonPressedState[ButtonType.STOP] == true,
                         colors = ButtonDefaults.buttonColors(containerColor = Red)
                     )
                     ButtonStyle(
                         textButton = stringResource(R.string.ZeroButton),
                         onClick = incrementHook.zeroDisplay,
-                        isPressed = incrementHook.zeroButtonPressed,
+                        isPressed = incrementHook.buttonPressedState[ButtonType.ZERO] == true,
                         colors = ButtonDefaults.buttonColors(containerColor = Black)
                     )
                 }
