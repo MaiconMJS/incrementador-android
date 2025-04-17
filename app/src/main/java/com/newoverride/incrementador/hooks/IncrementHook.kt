@@ -46,6 +46,7 @@ fun incrementHook(): IncrementModel {
             val job = coroutineScope.launch {
                 delay(1000)
                 n1.intValue++
+                jobRef.value = null
             }
             jobRef.value = job
         }
@@ -93,7 +94,7 @@ fun incrementHook(): IncrementModel {
     // Encerra o temporizador quando o app é fechado >> Evitar vazamento de memória
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver {_, event ->
+        val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_DESTROY) {
                 jobRef.value?.cancel()
                 jobRef.value = null
