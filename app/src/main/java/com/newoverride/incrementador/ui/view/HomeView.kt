@@ -32,7 +32,7 @@ fun HomeView() {
     IncrementadorTheme {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column {
-                Display(incrementHook.n1, incrementHook.n2)
+                Display(incrementHook.number["n1"] ?: 0, incrementHook.number["n2"] ?: 0)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround

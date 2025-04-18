@@ -3,7 +3,6 @@ package com.newoverride.incrementador.hooks
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,8 +19,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun incrementHook(): IncrementModel {
-    val n1 = remember { mutableIntStateOf(0) }
-    val n2 = remember { mutableIntStateOf(0) }
+    val number = remember { mutableStateMapOf("n1" to 0, "n2" to 0) }
 
     val buttonPressedState = remember {
         mutableStateMapOf(
@@ -50,7 +48,7 @@ fun incrementHook(): IncrementModel {
             animateButton(ButtonType.MANUAL, buttonPressedState)
             val job = coroutineScope.launch {
                 delay(1000)
-                n1.intValue++
+                number["n1"] = (number["n1"]?: 0) + 1
                 jobRef.value = null
             }
             jobRef.value = job
@@ -63,7 +61,7 @@ fun incrementHook(): IncrementModel {
             val job = coroutineScope.launch {
                 while (isActive) {
                     delay(1000)
-                    n1.intValue++
+                    number["n1"] = (number["n1"]?: 0) + 1
                 }
             }
             jobRef.value = job
@@ -79,10 +77,10 @@ fun incrementHook(): IncrementModel {
     }
 
     val zeroDisplay = {
-        if (n1.intValue > 0 || n2.intValue > 0) {
+        if ((number["n1"] ?: 0) > 0 || ((number["n2"] ?: 0) > 0)) {
             animateButton(ButtonType.ZERO, buttonPressedState)
-            n1.intValue = 0
-            n2.intValue = 0
+            number["n1"] = 0
+            number["n2"] = 0
         }
         if (jobRef.value != null && jobRef.value!!.isActive) {
             animateButton(ButtonType.ZERO, buttonPressedState)
@@ -91,10 +89,14 @@ fun incrementHook(): IncrementModel {
         }
     }
 
-    LaunchedEffect(n1.intValue) {
+    LaunchedEffect(number["n1"]) {
         delay(500)
-        if (n2.intValue > 0) n2.intValue--
-        n2.intValue += n1.intValue
+
+        val currentN1 = number["n1"] ?: 0
+        val currentN2 = number["n2"] ?: 0
+
+        if (currentN2 > 0) number["n2"] = currentN2 - 1
+        number["n2"] = (number["n2"] ?: 0) + currentN1
     }
 
     // Encerra o temporizador quando o app é fechado >> Evitar vazamento de memória
@@ -113,8 +115,7 @@ fun incrementHook(): IncrementModel {
     }
 
     return IncrementModel(
-        n1 = n1.intValue,
-        n2 = n2.intValue,
+        number = number,
         buttonPressedState,
         manualIncrement = manualIncrement,
         autoIncrement = autoIncrement,
