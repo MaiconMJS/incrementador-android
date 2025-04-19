@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -43,37 +44,54 @@ fun incrementHook(): IncrementModel {
         }
     }
 
-    val manualIncrement = {
+    fun manualIncrementOrAutoIncrement(
+        buttonType: ButtonType,
+        buttonPressedState: SnapshotStateMap<ButtonType, Boolean>,
+        auto: Boolean
+    ) {
         if (jobRef.value == null || !jobRef.value!!.isActive) {
-            animateButton(ButtonType.MANUAL, buttonPressedState)
-            val job = coroutineScope.launch {
-                delay(1000)
-                number["n1"] = (number["n1"]?: 0) + 1
-                jobRef.value = null
+            if (auto) {
+                animateButton(buttonType, buttonPressedState)
+                val job = coroutineScope.launch {
+                    while (isActive) {
+                        delay(1000)
+                        number["n1"] = (number["n1"] ?: 0) + 1
+                    }
+                }
+                jobRef.value = job
+            } else {
+                animateButton(buttonType, buttonPressedState)
+                val job = coroutineScope.launch {
+                    delay(1000)
+                    number["n1"] = (number["n1"] ?: 0) + 1
+                    jobRef.value = null
+                }
+                jobRef.value = job
             }
-            jobRef.value = job
         }
     }
 
+    val manualIncrement = {
+        manualIncrementOrAutoIncrement(ButtonType.MANUAL, buttonPressedState, auto = false)
+    }
+
     val autoIncrement = {
-        if (jobRef.value == null || !jobRef.value!!.isActive) {
-            animateButton(ButtonType.AUTO, buttonPressedState)
-            val job = coroutineScope.launch {
-                while (isActive) {
-                    delay(1000)
-                    number["n1"] = (number["n1"]?: 0) + 1
-                }
-            }
-            jobRef.value = job
+        manualIncrementOrAutoIncrement(ButtonType.AUTO, buttonPressedState, auto = true)
+    }
+
+    fun stopIncrementOrZeroIncrement(
+        buttonType: ButtonType,
+        buttonPressedState: SnapshotStateMap<ButtonType, Boolean>
+    ) {
+        if (jobRef.value != null && jobRef.value!!.isActive) {
+            animateButton(buttonType, buttonPressedState)
+            jobRef.value?.cancel()
+            jobRef.value = null
         }
     }
 
     val stopIncrement = {
-        if (jobRef.value != null && jobRef.value!!.isActive) {
-            animateButton(ButtonType.STOP, buttonPressedState)
-            jobRef.value?.cancel()
-            jobRef.value = null
-        }
+        stopIncrementOrZeroIncrement(ButtonType.STOP, buttonPressedState)
     }
 
     val zeroDisplay = {
@@ -82,11 +100,7 @@ fun incrementHook(): IncrementModel {
             number["n1"] = 0
             number["n2"] = 0
         }
-        if (jobRef.value != null && jobRef.value!!.isActive) {
-            animateButton(ButtonType.ZERO, buttonPressedState)
-            jobRef.value?.cancel()
-            jobRef.value = null
-        }
+        stopIncrementOrZeroIncrement(ButtonType.ZERO, buttonPressedState)
     }
 
     LaunchedEffect(number["n1"]) {
@@ -116,7 +130,7 @@ fun incrementHook(): IncrementModel {
 
     return IncrementModel(
         number = number,
-        buttonPressedState,
+        buttonPressedState = buttonPressedState,
         manualIncrement = manualIncrement,
         autoIncrement = autoIncrement,
         stopIncrement = stopIncrement,
