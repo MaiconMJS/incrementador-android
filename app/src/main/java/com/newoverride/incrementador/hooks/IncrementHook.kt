@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.newoverride.incrementador.enum.ButtonType
+import com.newoverride.incrementador.enum.NumberType
 import com.newoverride.incrementador.model.IncrementModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun incrementHook(): IncrementModel {
-    val number = remember { mutableStateMapOf("n1" to 0, "n2" to 0) }
+    val number = remember { mutableStateMapOf(NumberType.N1 to 0, NumberType.N2 to 0) }
 
     val buttonPressedState = remember {
         mutableStateMapOf(
@@ -55,7 +56,7 @@ fun incrementHook(): IncrementModel {
                 val job = coroutineScope.launch {
                     while (isActive) {
                         delay(1000)
-                        number["n1"] = (number["n1"] ?: 0) + 1
+                        number[NumberType.N1] = (number[NumberType.N1] ?: 0) + 1
                     }
                 }
                 jobRef.value = job
@@ -63,7 +64,7 @@ fun incrementHook(): IncrementModel {
                 animateButton(buttonType, buttonPressedState)
                 val job = coroutineScope.launch {
                     delay(1000)
-                    number["n1"] = (number["n1"] ?: 0) + 1
+                    number[NumberType.N1] = (number[NumberType.N1] ?: 0) + 1
                     jobRef.value = null
                 }
                 jobRef.value = job
@@ -95,22 +96,22 @@ fun incrementHook(): IncrementModel {
     }
 
     val zeroDisplay = {
-        if ((number["n1"] ?: 0) > 0 || ((number["n2"] ?: 0) > 0)) {
+        if ((number[NumberType.N1] ?: 0) > 0 || ((number[NumberType.N2] ?: 0) > 0)) {
             animateButton(ButtonType.ZERO, buttonPressedState)
-            number["n1"] = 0
-            number["n2"] = 0
+            number[NumberType.N1] = 0
+            number[NumberType.N2] = 0
         }
         stopIncrementOrZeroIncrement(ButtonType.ZERO, buttonPressedState)
     }
 
-    LaunchedEffect(number["n1"]) {
+    LaunchedEffect(number[NumberType.N1]) {
         delay(500)
 
-        val currentN1 = number["n1"] ?: 0
-        val currentN2 = number["n2"] ?: 0
+        val currentN1 = number[NumberType.N1] ?: 0
+        val currentN2 = number[NumberType.N2] ?: 0
 
-        if (currentN2 > 0) number["n2"] = currentN2 - 1
-        number["n2"] = (number["n2"] ?: 0) + currentN1
+        if (currentN2 > 0) number[NumberType.N2] = currentN2 - 1
+        number[NumberType.N2] = (number[NumberType.N2] ?: 0) + currentN1
     }
 
     // Encerra o temporizador quando o app é fechado >> Evitar vazamento de memória

@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import com.newoverride.incrementador.R
 import com.newoverride.incrementador.dimens.Dimens
 import com.newoverride.incrementador.enum.ButtonType
+import com.newoverride.incrementador.enum.NumberType
 import com.newoverride.incrementador.hooks.incrementHook
 import com.newoverride.incrementador.ui.components.ButtonStyle
 import com.newoverride.incrementador.ui.components.Display
@@ -35,7 +36,10 @@ fun HomeView() {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column {
-                    Display(incrementHook.number["n1"] ?: 0, incrementHook.number["n2"] ?: 0)
+                    Display(
+                        incrementHook.number[NumberType.N1] ?: 0,
+                        incrementHook.number[NumberType.N2] ?: 0
+                    )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround

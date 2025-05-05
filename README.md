@@ -27,7 +27,7 @@ Um aplicativo Android desenvolvido com **Jetpack Compose**, que apresenta dois v
 
 ## 📸 Demonstração
 
-<img src="tela.jpg" alt="Interface do App Mobile" width="300">
+<img src="/images/tela.jpg" alt="Interface do App Mobile" width="300">
 
 ---
 
